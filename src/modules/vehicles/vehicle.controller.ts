@@ -1,34 +1,14 @@
 import { Request, Response } from "express"
-import { userServices } from "./user.service"
+import { vehicleServices } from "./vehicle.service"
 
-
-
-const createUser = async (req: Request, res: Response) => {
+const createVehicle = async (req: Request, res: Response) => {
+    const result = await vehicleServices.createVehicle(req.body)
     try {
-        const result = await userServices.createUser(req.body)
-
         res.status(201).json({
             success: true,
-            message: "User added successfully",
+            message: "Vehicle added successfully",
             data: result.rows[0],
         })
-    } catch (err: any) {
-        res.status(404).json({
-            success: false,
-            message: err.message,
-        })
-    }
-}
-
-
-const getAllUsers = async (req: Request, res: Response) => {
-    try {
-        const result = await userServices.getAllUsers()
-        res.status(200).json({
-            success: true,
-            data: result.rows,
-        })
-
     } catch (err: any) {
         res.status(500).json({
             success: false,
@@ -38,11 +18,28 @@ const getAllUsers = async (req: Request, res: Response) => {
 }
 
 
-const getSingleUser = async (req: Request, res: Response) => {
-    const paramsEmail = req.params.email
 
+const getVehicle = async (req: Request, res: Response) => {
     try {
-        const result = await userServices.getSingleUser(paramsEmail as string)
+        const result = await vehicleServices.getVehicle()
+        res.status(201).json({
+            success: true,
+            data: result.rows,
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        })
+    }
+}
+
+
+
+const getSingleVehicle = async (req: Request, res: Response) => {
+    const vehicleId = req.params.vehicleId
+    try {
+        const result = await vehicleServices.getSingleVehicle(vehicleId as string)
         if (result.rows.length === 0) {
             res.status(404).json({
                 status: false,
@@ -64,11 +61,12 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 
 
-const updateUser = async (req: Request, res: Response) => {
-    const paramsEmail = req.params.email
+const updateVehicle = async (req: Request, res: Response) => {
+    const vehicleId = req.params.vehicleId
+
     try {
-        const result = await userServices.updateUser(
-            paramsEmail as string,
+        const result = await vehicleServices.updateVehicle(
+            vehicleId as string,
             req.body
         )
         if (result.rows.length === 0) {
@@ -79,12 +77,12 @@ const updateUser = async (req: Request, res: Response) => {
         } else {
             res.status(200).json({
                 status: true,
-                message: "User updated successfully",
+                message: "Vehicle updated successfully",
                 data: result.rows[0],
             })
         }
     } catch (err: any) {
-        res.status(500).json({
+        res.status(404).json({
             status: false,
             message: err.message,
         })
@@ -92,11 +90,12 @@ const updateUser = async (req: Request, res: Response) => {
 }
 
 
-const deleteUser = async (req: Request, res: Response) => {
-    const paramsEmail = req.params.email
 
+const deleteVehicle = async (req: Request, res: Response) => {
+    const vehicleId = req.params.vehicleId
     try {
-        const result = await userServices.deleteUser(paramsEmail as string)
+        const result = await vehicleServices.deleteVehicle(vehicleId as string)
+
         if (result.rowCount === 0) {
             res.status(404).json({
                 status: false,
@@ -105,7 +104,7 @@ const deleteUser = async (req: Request, res: Response) => {
         } else {
             res.status(200).json({
                 status: true,
-                message: "User deleted successfully",
+                message: "Vehicle deleted successfully",
             })
         }
     } catch (err: any) {
@@ -115,13 +114,10 @@ const deleteUser = async (req: Request, res: Response) => {
         })
     }
 }
-
-
-
-export const userControllers = {
-    createUser,
-    getAllUsers,
-    getSingleUser,
-    updateUser,
-    deleteUser
+export const vehicleController = {
+    createVehicle,
+    getVehicle,
+    getSingleVehicle,
+    updateVehicle,
+    deleteVehicle
 }

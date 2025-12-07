@@ -1,9 +1,9 @@
-import { Pool } from "pg";
-import config from ".";
+import { Pool } from "pg"
+import config from "."
 
 export const pool = new Pool({
     connectionString: `${config.connection_string}`,
-});
+})
 
 const initDB = async () => {
     await pool.query(`
@@ -15,7 +15,7 @@ const initDB = async () => {
       phone VARCHAR(15) NOT NULL,
       role VARCHAR(50) NOT NULL
         CHECK (role IN ('admin', 'customer'))
-      )`);
+      )`)
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS Vehicles(
@@ -28,7 +28,7 @@ const initDB = async () => {
         CHECK(daily_rent_price > 0),
         availability_status VARCHAR(100) 
         CHECK(availability_status IN ('available','booked'))
-        )`);
+        )`)
 
     await pool.query(`
           CREATE TABLE IF NOT EXISTS Bookings(
@@ -42,7 +42,7 @@ const initDB = async () => {
           status VARCHAR(50) 
           CHECK(status IN ('active','cancelled','returned'))
           )
-          `);
-};
+          `)
+}
 
-export default initDB;
+export default initDB
